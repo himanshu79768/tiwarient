@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from "react";
 import ParallaxImage from '../components/ParallaxImage';
 
 const About: React.FC = () => {
