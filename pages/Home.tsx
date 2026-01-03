@@ -13,9 +13,7 @@ const FeatureCard: React.FC<{ title: string; description: string; icon: React.Re
 
 const Home: React.FC = () => {
   const videoSources = [
-    '/Artworks_Only_Video_Generated.mp4',
-    '/grok.mp4',
-    '/showroom_tour.mp4'
+    '/hero.mp4',
   ];
 
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
