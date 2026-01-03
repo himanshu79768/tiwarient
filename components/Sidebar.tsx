@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Page } from '../types.ts';
+import { Page } from '../types';
 
 interface SidebarProps {
   isOpen: boolean;
