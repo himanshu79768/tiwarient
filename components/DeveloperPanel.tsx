@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, storage } from '../firebase';
+import { db } from '../firebase';
 import { ref as dbRef, onValue, set, remove, update } from 'firebase/database';
-import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject, UploadTask } from 'firebase/storage';
 import { GalleryImage } from '../types';
 
 interface ContactMessage {
@@ -20,10 +19,8 @@ interface DeveloperPanelProps {
 }
 
 interface Upload {
-    progress: number;
     name: string;
-    task: UploadTask | null;
-    status: 'compressing' | 'uploading' | 'failed' | 'canceled';
+    status: 'compressing' | 'uploading' | 'failed';
 }
 
 const categories = [
@@ -78,6 +75,19 @@ const compressImage = (file: File, quality = 0.8, max_width = 1024, max_height =
     });
 };
 
+// UTILITY: Converts a blob to a Base64 data URL
+const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onerror = reject;
+        reader.onloadend = () => {
+            resolve(reader.result as string);
+        };
+    });
+};
+
+
 const TabButton: React.FC<{ active: boolean; onClick: () => void; children: React.ReactNode }> = ({ active, onClick, children }) => (
     <button
         onClick={onClick}
@@ -112,7 +122,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<'gallery' | 'messages'>('gallery');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState<GalleryImage | null>(null);
-  const [confirmModalData, setConfirmModalData] = useState<{ type: 'image' | 'message', id: string, src?: string } | null>(null);
+  const [confirmModalData, setConfirmModalData] = useState<{ type: 'image' | 'message', id: string } | null>(null);
   const [uploads, setUploads] = useState<{ [key: string]: Upload }>({});
 
 
@@ -146,87 +156,51 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
         if (!file) return;
 
         const uniqueId = `img_${Date.now()}`;
-        setUploads(prev => ({ ...prev, [uniqueId]: { progress: 0, name: file.name, task: null, status: 'compressing' } }));
+        setUploads(prev => ({ ...prev, [uniqueId]: { name: file.name, status: 'compressing' } }));
 
         try {
             const compressedBlob = await compressImage(file);
-            const sRef = storageRef(storage, `gallery/${uniqueId}`);
-            const uploadTask = uploadBytesResumable(sRef, compressedBlob);
+            setUploads(prev => ({ ...prev, [uniqueId]: { ...prev[uniqueId], status: 'uploading' } }));
 
-            setUploads(prev => ({ ...prev, [uniqueId]: { ...prev[uniqueId], task: uploadTask, status: 'uploading' } }));
+            const base64String = await blobToBase64(compressedBlob);
             
-            uploadTask.on('state_changed', 
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setUploads(prev => prev[uniqueId] ? { ...prev, [uniqueId]: { ...prev[uniqueId], progress } } : prev);
-                },
-                (error) => {
-                    if (error.code === 'storage/canceled') {
-                         setUploads(prev => {
-                            const newUploads = { ...prev };
-                            delete newUploads[uniqueId];
-                            return newUploads;
-                        });
-                    } else {
-                        console.error("Upload failed:", error);
-                        setUploads(prev => prev[uniqueId] ? { ...prev, [uniqueId]: { ...prev[uniqueId], status: 'failed' } } : prev);
-                    }
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        set(dbRef(db, `gallery/${uniqueId}`), {
-                            src: downloadURL,
-                            alt: title,
-                            description: description,
-                            category: category,
-                        });
-                        setUploads(prev => {
-                            const newUploads = { ...prev };
-                            delete newUploads[uniqueId];
-                            return newUploads;
-                        });
-                    });
-                }
-            );
+            await set(dbRef(db, `gallery/${uniqueId}`), {
+                src: base64String,
+                alt: title,
+                description: description,
+                category: category,
+            });
+
+            // Success, remove from uploads list
+            setUploads(prev => {
+                const newUploads = { ...prev };
+                delete newUploads[uniqueId];
+                return newUploads;
+            });
+
         } catch (error) {
-            console.error("Compression or upload initiation failed:", error);
-            setUploads(prev => ({ ...prev, [uniqueId]: { ...prev[uniqueId], status: 'failed' } }));
+            console.error("Image processing or upload failed:", error);
+            setUploads(prev => prev[uniqueId] ? { ...prev, [uniqueId]: { ...prev[uniqueId], status: 'failed' } } : prev);
         }
     };
 
-    const handleCancelUpload = (id: string) => {
-        const upload = uploads[id];
-        if (upload && upload.task) {
-            upload.task.cancel();
-        } else {
-            // If task hasn't been created yet (i.e., still compressing), just remove it
-            setUploads(prev => {
-                const newUploads = { ...prev };
-                delete newUploads[id];
-                return newUploads;
-            });
-        }
+    const handleClearUpload = (id: string) => {
+        setUploads(prev => {
+            const newUploads = { ...prev };
+            delete newUploads[id];
+            return newUploads;
+        });
     };
   
   const handleUpdateImage = async (id: string, updates: Partial<GalleryImage>, newFile?: File) => {
     if (newFile) {
-      const oldImage = images.find(img => img.id === id);
-      const compressedBlob = await compressImage(newFile);
-      const sRef = storageRef(storage, `gallery/${id}`);
-      const uploadTask = uploadBytesResumable(sRef, compressedBlob);
-      // Can add progress bar for updates too if needed
-      await uploadTask;
-      updates.src = await getDownloadURL(sRef);
-      // Delete old image if it was a storage image and not a placeholder/data URL
-      if (oldImage && oldImage.src.includes('firebasestorage')) {
-          try {
-             const oldRef = storageRef(storage, oldImage.src);
-             await deleteObject(oldRef);
-          } catch(error: any) {
-              if (error.code !== 'storage/object-not-found') {
-                console.error("Could not delete old storage object:", error);
-              }
-          }
+      try {
+        const compressedBlob = await compressImage(newFile);
+        updates.src = await blobToBase64(compressedBlob);
+      } catch (error) {
+          console.error("Failed to process new image for update:", error);
+          alert("Failed to process the new image. Please try another file.");
+          return;
       }
     }
     await update(dbRef(db, `gallery/${id}`), updates);
@@ -234,20 +208,9 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   
   const handleDeleteConfirmed = async () => {
       if (!confirmModalData) return;
-      const { type, id, src } = confirmModalData;
+      const { type, id } = confirmModalData;
       if (type === 'image') {
           await remove(dbRef(db, `gallery/${id}`));
-          if (src && src.includes('firebasestorage.googleapis.com')) {
-              try {
-                  const imageRef = storageRef(storage, src);
-                  await deleteObject(imageRef);
-              } catch (error: any) {
-                  // It's okay if the object doesn't exist (e.g., data inconsistency)
-                  if (error.code !== 'storage/object-not-found') {
-                    console.error("Error deleting image from storage:", error);
-                  }
-              }
-          }
       } else if (type === 'message') {
           await remove(dbRef(db, `contacts/${id}`));
       }
@@ -267,7 +230,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
         <header className="px-6 py-3 flex justify-between items-center flex-shrink-0">
             <h2 className="text-2xl font-serif text-brown-dark">Developer Panel</h2>
             <button onClick={onClose} className="text-brown-dark hover:text-accent p-2 -mr-2">
-                <svg xmlns="http://www.w.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </header>
 
@@ -294,23 +257,19 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                     </div>
                      {Object.keys(uploads).length > 0 && (
                         <div className="mb-6 p-4 border rounded-md border-brown-light/20 space-y-3">
-                           {Object.entries(uploads).map(([key, {name, progress, status, task}]) => (
-                               <div key={key}>
-                                   <div className="flex justify-between items-center text-sm mb-1">
-                                       <span className="text-grey-dark truncate pr-4">{name}</span>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-brown-dark font-medium capitalize">
-                                                {status === 'failed' ? 'Failed' : status === 'compressing' ? 'Compressing...' : `${Math.round(progress)}%`}
-                                            </span>
-                                            <button onClick={() => handleCancelUpload(key)} className="text-red-500 hover:text-red-700">
+                           {Object.entries(uploads).map(([key, {name, status}]) => (
+                               <div key={key} className="flex justify-between items-center text-sm p-2 bg-brown-light/10 rounded">
+                                   <span className="text-grey-dark truncate pr-4">{name}</span>
+                                   <div className="flex items-center gap-2">
+                                        <span className={`font-medium capitalize ${status === 'failed' ? 'text-red-500' : 'text-brown-dark'}`}>
+                                            {status === 'compressing' ? 'Compressing...' : status === 'uploading' ? 'Uploading...' : 'Failed'}
+                                        </span>
+                                        {status === 'failed' && (
+                                            <button onClick={() => handleClearUpload(key)} className="text-grey-dark hover:text-red-500" title="Clear failed upload">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </button>
-                                        </div>
-                                   </div>
-                                   <div className="w-full bg-brown-light/20 rounded-full h-2 overflow-hidden">
-                                       {status !== 'compressing' && <div className="bg-brown h-2 rounded-full transition-all" style={{width: `${progress}%`}}></div>}
-                                       {status === 'compressing' && <div className="w-full h-full bg-brown-light animate-pulse"></div>}
-                                   </div>
+                                        )}
+                                    </div>
                                </div>
                            ))}
                         </div>
@@ -327,7 +286,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                                 <IconButton onClick={() => setEditModalData(img)} title="Edit" className="bg-brown/70 hover:bg-brown text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>
                                 </IconButton>
-                                <IconButton onClick={() => setConfirmModalData({ type: 'image', id: img.id, src: img.src })} title="Delete" className="bg-red-500 hover:bg-red-600 text-white">
+                                <IconButton onClick={() => setConfirmModalData({ type: 'image', id: img.id })} title="Delete" className="bg-red-500 hover:bg-red-600 text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 </IconButton>
                             </div>

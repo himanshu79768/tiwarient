@@ -83,11 +83,18 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onNavigate, currentPage, i
 
       {/* Right: Navigation */}
       <div className="w-24 md:flex-1 flex justify-end">
+        {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <button onClick={() => onNavigate('Gallery')} className={`font-sans text-xs font-medium tracking-widest hover:opacity-70 transition-colors duration-300 ${textClasses}`}>
             GALLERY
           </button>
           <button onClick={() => onNavigate('Contact')} className={`font-sans text-xs font-medium tracking-widest hover:opacity-70 transition-colors duration-300 ${textClasses}`}>
+            CONTACT
+          </button>
+        </div>
+        {/* Mobile Contact Button */}
+        <div className="md:hidden">
+           <button onClick={() => onNavigate('Contact')} className={`font-sans text-xs font-medium tracking-widest hover:opacity-70 transition-colors duration-300 ${textClasses}`}>
             CONTACT
           </button>
         </div>
