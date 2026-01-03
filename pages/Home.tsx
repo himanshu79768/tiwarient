@@ -1,5 +1,5 @@
-import { useState } from "react";
-import ParallaxImage from '../components/ParallaxImage';
+import React from 'react';
+import ParallaxImage from '../components/ParallaxImage.tsx';
 
 const FeatureCard: React.FC<{ title: string; description: string; icon: React.ReactNode }> = ({ title, description, icon }) => (
   <div className="text-center">

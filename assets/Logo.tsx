@@ -1,11 +1,12 @@
+
+import React from 'react';
+
 interface LogoProps {
   color?: string;
 }
 
-const Logo = ({ color = '#5D534A' }: LogoProps) => {
-  const subColor = color === '#FFFFFF'
-    ? 'rgba(255,255,255,0.8)'
-    : '#8D7B68';
+const Logo: React.FC<LogoProps> = ({ color = '#5D534A' }) => {
+  const subColor = color === '#FFFFFF' ? 'rgba(255,255,255,0.8)' : '#8D7B68';
 
   return (
     <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">

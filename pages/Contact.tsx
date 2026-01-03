@@ -1,5 +1,5 @@
-import { useState } from "react";
-import ParallaxImage from '../components/ParallaxImage';
+import React from 'react';
+import ParallaxImage from '../components/ParallaxImage.tsx';
 
 const Contact: React.FC = () => {
   return (

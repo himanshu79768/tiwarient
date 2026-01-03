@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { Page } from '../types';
+import React from 'react';
+import { Page } from '../types.ts';
 
 interface SidebarProps {
   isOpen: boolean;
