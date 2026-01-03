@@ -34,8 +34,13 @@ const categories = [
   'temple',
 ];
 
+const CLOUDINARY_CLOUD_NAME = 'dhuhvfubv';
+const CLOUDINARY_UPLOAD_PRESET = 'website_uploads';
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+
 // UTILITY: Converts a file to a compressed blob
-const compressImage = (file: File, quality = 0.8, max_width = 1024, max_height = 1024): Promise<Blob> => {
+const compressImage = (file: File, quality = 0.8, max_width = 1920, max_height = 1080): Promise<Blob> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -74,19 +79,6 @@ const compressImage = (file: File, quality = 0.8, max_width = 1024, max_height =
         };
     });
 };
-
-// UTILITY: Converts a blob to a Base64 data URL
-const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onerror = reject;
-        reader.onloadend = () => {
-            resolve(reader.result as string);
-        };
-    });
-};
-
 
 const TabButton: React.FC<{ active: boolean; onClick: () => void; children: React.ReactNode }> = ({ active, onClick, children }) => (
     <button
@@ -161,17 +153,29 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
         try {
             const compressedBlob = await compressImage(file);
             setUploads(prev => ({ ...prev, [uniqueId]: { ...prev[uniqueId], status: 'uploading' } }));
-
-            const base64String = await blobToBase64(compressedBlob);
             
+            const formData = new FormData();
+            formData.append('file', compressedBlob);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+            const response = await fetch(CLOUDINARY_URL, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Cloudinary upload failed');
+            }
+
+            const data = await response.json();
+
             await set(dbRef(db, `gallery/${uniqueId}`), {
-                src: base64String,
+                src: data.secure_url,
                 alt: title,
                 description: description,
                 category: category,
             });
 
-            // Success, remove from uploads list
             setUploads(prev => {
                 const newUploads = { ...prev };
                 delete newUploads[uniqueId];
@@ -196,7 +200,23 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
     if (newFile) {
       try {
         const compressedBlob = await compressImage(newFile);
-        updates.src = await blobToBase64(compressedBlob);
+        
+        const formData = new FormData();
+        formData.append('file', compressedBlob);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await fetch(CLOUDINARY_URL, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Cloudinary upload failed during update');
+        }
+        
+        const data = await response.json();
+        updates.src = data.secure_url;
+
       } catch (error) {
           console.error("Failed to process new image for update:", error);
           alert("Failed to process the new image. Please try another file.");
@@ -210,6 +230,8 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
       if (!confirmModalData) return;
       const { type, id } = confirmModalData;
       if (type === 'image') {
+          // Note: This only removes the database reference. 
+          // The image will remain on Cloudinary but will no longer appear in the gallery.
           await remove(dbRef(db, `gallery/${id}`));
       } else if (type === 'message') {
           await remove(dbRef(db, `contacts/${id}`));
