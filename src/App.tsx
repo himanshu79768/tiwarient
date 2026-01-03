@@ -8,7 +8,7 @@ import Experience from './pages/Experience';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
 import DeveloperPanel from './components/DeveloperPanel';
-import { Page } from './types.ts';
+import { Page } from './types';
 
 const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
