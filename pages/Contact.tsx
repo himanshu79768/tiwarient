@@ -48,7 +48,7 @@ const Contact: React.FC = () => {
 
   return (
     <>
-      <div className="pt-48 md:pt-56 p-8 md:p-16 max-w-7xl mx-auto animate-fadeIn">
+      <div className="pt-28 p-8 md:p-16 md:pt-36 max-w-7xl mx-auto animate-fadeIn">
         <h1 className="text-5xl font-serif text-center mb-16 text-brown-dark">Contact Us</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Details Section */}

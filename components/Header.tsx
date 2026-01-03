@@ -56,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onNavigate, currentPage, i
   return (
     <header className={`fixed top-0 left-0 right-0 h-20 z-40 flex items-center justify-between px-6 md:px-12 transition-all duration-300 ${headerClasses} ${visibilityClass}`}>
       {/* Left: Menu Button */}
-      <div className="flex-1 flex justify-start">
+      <div className="w-24 md:flex-1 flex justify-start">
         <button onClick={onMenuClick} className="relative w-24 h-6 flex items-center justify-start group">
           {/* MENU State */}
           <div className={`absolute inset-0 flex items-center gap-2 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-0' : 'opacity-100'}`}>
@@ -82,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onNavigate, currentPage, i
       </div>
 
       {/* Right: Navigation */}
-      <div className="flex-1 flex justify-end">
+      <div className="w-24 md:flex-1 flex justify-end">
         <div className="hidden md:flex items-center gap-6">
           <button onClick={() => onNavigate('Gallery')} className={`font-sans text-xs font-medium tracking-widest hover:opacity-70 transition-colors duration-300 ${textClasses}`}>
             GALLERY

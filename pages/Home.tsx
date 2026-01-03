@@ -60,10 +60,10 @@ const Home: React.FC = () => {
        <section className="px-6 md:px-12 pb-20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="space-y-8">
-            <ParallaxImage src="https://picsum.photos/800/600?image=1060" alt="Kitchen Tiling" className="rounded-md shadow-lg w-full"/>
+            <ParallaxImage src="https://iili.io/fjLP1DJ.md.jpg" alt="Kitchen Tiling" className="rounded-md shadow-lg w-full"/>
           </div>
           <div className="space-y-8 md:pt-24">
-             <ParallaxImage src="https://picsum.photos/800/600?image=659" alt="Bathroom Fixtures" className="rounded-md shadow-lg w-full"/>
+             <ParallaxImage src="https://iili.io/fjLiN1V.md.jpg" alt="Bathroom Fixtures" className="rounded-md shadow-lg w-full"/>
           </div>
         </div>
       </section>

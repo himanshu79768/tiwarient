@@ -76,12 +76,12 @@ const TypingText: React.FC<{ text: string; speed?: number; className?: string }>
 };
 
 const ServiceCard: React.FC<{ title: string; description: string; icon: React.ReactNode }> = ({ title, description, icon }) => (
-  <div className="text-center p-6 h-full bg-white/50 rounded-lg shadow-md backdrop-blur-sm">
+  <div className="p-6 h-full bg-white/50 rounded-lg shadow-md backdrop-blur-sm">
     <div className="flex justify-center items-center mb-4 text-brown h-12 w-12 mx-auto">
       {icon}
     </div>
-    <h3 className="text-xl font-serif text-brown-dark mb-2">{title}</h3>
-    <p className="text-grey-dark font-light text-sm">{description}</p>
+    <h3 className="text-xl font-serif text-brown-dark mb-2 text-left md:text-center">{title}</h3>
+    <p className="text-grey-dark font-light text-sm text-left md:text-center">{description}</p>
   </div>
 );
 
@@ -142,7 +142,7 @@ const Experiences: React.FC = () => {
 
   return (
     <>
-      <div className="animate-fadeIn pt-48 md:pt-56 p-8 md:px-16 max-w-7xl mx-auto">
+      <div className="animate-fadeIn pt-28 p-8 md:px-16 max-w-7xl mx-auto">
         <h1 className="text-5xl font-serif text-center mb-16 text-brown-dark">Our Experiences</h1>
         
         {/* Our Services Section */}

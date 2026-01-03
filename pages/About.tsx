@@ -71,7 +71,7 @@ const AnimatedCounter: React.FC<{ target: number, duration?: number }> = ({ targ
 
 const About: React.FC = () => {
   return (
-    <div className="pt-48 animate-fadeIn">
+    <div className="pt-28 animate-fadeIn">
       {/* Header section */}
       <section className="p-8 md:px-16 max-w-7xl mx-auto text-center">
         <h1 className="text-5xl font-serif mb-4 text-brown-dark">About Tiwari Enterprises</h1>
@@ -97,7 +97,7 @@ const About: React.FC = () => {
 
           {/* Image */}
           <div>
-            <ParallaxImage src="https://iili.io/fjP0rIp.md.jpg" alt="Tiwari Enterprises workspace and showroom" className="rounded-lg shadow-2xl w-full h-[400px] object-cover"/>
+            <ParallaxImage src="https://iili.io/fjP0rIp.md.jpg" alt="Tiwari Enterprises workspace and showroom" className="rounded-lg shadow-2xl w-full h-[200px] md:h-[400px] object-cover"/>
           </div>
         </div>
       </section>
