@@ -28,9 +28,9 @@ const Home: React.FC = () => {
         </video>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="text-center text-white z-10 p-4 max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-serif font-normal mb-4 leading-relaxed">
-            Elevating Living Through
-            <span className="block">
+          <h1 className="text-4xl md:text-6xl font-serif font-normal mb-4">
+            Elevating Living Via
+            <span className="block mt-6">
               <span className="italic">Goan</span> Craftsmanship
             </span>
           </h1>
@@ -47,7 +47,7 @@ const Home: React.FC = () => {
       <section className="py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-xs text-brown tracking-widest mb-4">MAKING MEMORIES</h2>
-            <p className="text-3xl font-serif text-brown-dark mb-6">
+            <p className="text-2xl font-serif text-brown-dark mb-6">
               A FOUNDATION OF QUALITY FOR A LIFETIME OF MOMENTS.
             </p>
             <p className="text-grey-dark leading-relaxed">

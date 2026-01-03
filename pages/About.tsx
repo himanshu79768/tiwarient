@@ -86,7 +86,7 @@ const About: React.FC = () => {
           
           {/* Text Content */}
           <div className="space-y-6 text-grey-dark leading-relaxed">
-            <h2 className="text-3xl font-serif text-brown-dark">Excellence in Every Project</h2>
+            <h2 className="text-2xl font-serif text-brown-dark">EXCELLENCE IN EVERY PROJECT</h2>
             <p>
               Since our establishment in Mapusa, Tiwari Enterprises has been at the forefront of construction and interior design services in Goa. We specialize in creating beautiful, functional spaces that combine modern design principles with the unique architectural heritage of Goa.
             </p>

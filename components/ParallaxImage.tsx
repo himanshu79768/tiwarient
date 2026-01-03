@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 
 interface ParallaxImageProps {
@@ -8,9 +7,10 @@ interface ParallaxImageProps {
   strength?: number;
 }
 
-const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className = '', strength = 0.2 }) => {
+const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className = '', strength = 0.15 }) => {
   const [offsetY, setOffsetY] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const scale = 1.15; // Use a slightly more subtle zoom to avoid distortion
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,18 +19,24 @@ const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className = '',
         const elementIsInView = rect.top < window.innerHeight && rect.bottom > 0;
         
         if (elementIsInView) {
-          const distanceToCenter = window.innerHeight / 2 - rect.top;
-          const parallaxOffset = distanceToCenter * strength;
+          // Calculate parallax based on the distance between the element's center and the viewport's center
+          const distanceToCenter = (window.innerHeight / 2) - (rect.top + rect.height / 2);
+          let parallaxOffset = distanceToCenter * strength;
+
+          // Clamp the offset to ensure the scaled image edges are never visible
+          const maxOffset = (rect.height * (scale - 1)) / 2;
+          parallaxOffset = Math.max(-maxOffset, Math.min(maxOffset, parallaxOffset));
+          
           setOffsetY(parallaxOffset);
         }
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    handleScroll(); // Initial calculation on mount
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [strength]);
+  }, [strength]); // Rerun effect if strength changes
 
   return (
     <div ref={containerRef} className={`overflow-hidden ${className}`}>
@@ -40,7 +46,7 @@ const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className = '',
         loading="lazy"
         className="w-full h-auto object-cover transition-transform duration-200 ease-out"
         style={{ 
-          transform: `translateY(${offsetY}px) scale(1.2)`, // Scale up to avoid edges
+          transform: `translateY(${offsetY}px) scale(${scale})`,
           willChange: 'transform' // Performance optimization
         }}
       />
