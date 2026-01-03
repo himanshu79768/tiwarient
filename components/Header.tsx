@@ -56,22 +56,25 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onNavigate, currentPage, i
   return (
     <header className={`fixed top-0 left-0 right-0 h-20 z-40 flex items-center justify-between px-6 md:px-12 transition-all duration-300 ${headerClasses} ${visibilityClass}`}>
       {/* Left: Menu Button */}
-      <div className="w-24 md:flex-1 flex justify-start">
-        <button onClick={onMenuClick} className="relative w-24 h-6 flex items-center justify-start group">
-          {/* MENU State */}
-          <div className={`absolute inset-0 flex items-center gap-2 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-0' : 'opacity-100'}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 group-hover:opacity-70 transition-colors duration-300 ${textClasses}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
-            </svg>
-            <span className={`font-sans text-xs font-medium tracking-widest group-hover:opacity-70 transition-colors duration-300 ${textClasses}`}>MENU</span>
-          </div>
-          {/* CLOSE State */}
-          <div className={`absolute inset-0 flex items-center gap-2 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 group-hover:opacity-70 transition-colors duration-300 ${textClasses}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            <span className={`font-sans text-xs font-medium tracking-widest group-hover:opacity-70 transition-colors duration-300 ${textClasses}`}>CLOSE</span>
-          </div>
+      <div className="flex-1 flex justify-start">
+        <button onClick={onMenuClick} className="group flex items-center gap-2">
+            <div className="relative h-6 w-6">
+                {/* MENU State */}
+                <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${isSidebarOpen ? 'opacity-0' : 'opacity-100'}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 group-hover:opacity-70 transition-colors duration-300 ${textClasses}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </div>
+                {/* CLOSE State */}
+                <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 group-hover:opacity-70 transition-colors duration-300 ${textClasses}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+            </div>
+            <span className={`hidden md:inline-block font-sans text-xs font-medium tracking-widest uppercase group-hover:opacity-70 transition-colors duration-300 ${textClasses}`}>
+                {isSidebarOpen ? 'Close' : 'Menu'}
+            </span>
         </button>
       </div>
 
@@ -82,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onNavigate, currentPage, i
       </div>
 
       {/* Right: Navigation */}
-      <div className="w-24 md:flex-1 flex justify-end">
+      <div className="flex-1 flex justify-end">
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <button onClick={() => onNavigate('Gallery')} className={`font-sans text-xs font-medium tracking-widest hover:opacity-70 transition-colors duration-300 ${textClasses}`}>

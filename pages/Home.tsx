@@ -27,8 +27,8 @@ const Home: React.FC = () => {
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-black/50"></div>
-        <div className="text-center text-white z-10 p-4 max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-serif font-normal mb-4">
+        <div className="text-center z-10 p-4 max-w-4xl">
+          <h1 className="text-4xl md:text-6xl font-serif font-light text-white/90 mb-4 tracking-wide">
             Elevating Living Via
             <span className="block mt-6">
               <span className="italic">Goan</span> Craftsmanship
