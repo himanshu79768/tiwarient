@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Logo from '../assets/Logo.tsx';
-import { Page } from '../types.ts';
+import Logo from '../assets/Logo';
+import { Page } from '../types';
 
 interface HeaderProps {
   onMenuClick: () => void;
