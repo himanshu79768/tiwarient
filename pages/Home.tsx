@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ParallaxImage from '../components/ParallaxImage';
 
 const FeatureCard: React.FC<{ title: string; description: string; icon: React.ReactNode }> = ({ title, description, icon }) => (
@@ -12,18 +12,31 @@ const FeatureCard: React.FC<{ title: string; description: string; icon: React.Re
 );
 
 const Home: React.FC = () => {
+  const videoSources = [
+    '/Artworks_Only_Video_Generated.mp4',
+    '/grok.mp4',
+    '/showroom_tour.mp4'
+  ];
+
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+
+  const handleVideoEnd = () => {
+    setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videoSources.length);
+  };
+
   return (
     <div className="animate-fadeIn">
       {/* Immersive Hero Video Section */}
       <section className="h-screen relative flex items-center justify-center overflow-hidden">
         <video
+          key={videoSources[currentVideoIndex]}
+          src={videoSources[currentVideoIndex]}
           autoPlay
-          loop
           muted
           playsInline
+          onEnded={handleVideoEnd}
           className="absolute z-0 w-auto min-w-full min-h-full max-w-none object-cover"
         >
-           <source src="/Artworks_Only_Video_Generated.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-black/50"></div>
