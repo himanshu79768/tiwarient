@@ -1,14 +1,14 @@
 
 import React, { useState } from 'react';
-import Header from './components/Header.tsx';
-import Sidebar from './components/Sidebar.tsx';
-import Footer from './components/Footer.tsx';
-import Home from './pages/Home.tsx';
-import About from './pages/About.tsx';
-import Experience from './pages/Experience.tsx';
-import Contact from './pages/Contact.tsx';
-import Gallery from './pages/Gallery.tsx';
-import { Page } from './types.ts';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import About from './pages/About';
+import Experience from './pages/Experience';
+import Contact from './pages/Contact';
+import Gallery from './pages/Gallery';
+import { Page } from './types';
 
 const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
