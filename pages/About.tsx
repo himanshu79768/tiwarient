@@ -1,5 +1,5 @@
 import React from 'react';
-import ParallaxImage from '../components/ParallaxImage.tsx';
+import ParallaxImage from '../components/ParallaxImage';
 
 const About: React.FC = () => {
   return (
