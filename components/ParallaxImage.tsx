@@ -37,6 +37,7 @@ const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className = '',
       <img
         src={src}
         alt={alt}
+        loading="lazy"
         className="w-full h-auto object-cover transition-transform duration-200 ease-out"
         style={{ 
           transform: `translateY(${offsetY}px) scale(1.2)`, // Scale up to avoid edges

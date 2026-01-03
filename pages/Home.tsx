@@ -14,9 +14,19 @@ const FeatureCard: React.FC<{ title: string; description: string; icon: React.Re
 const Home: React.FC = () => {
   return (
     <div className="animate-fadeIn">
-      {/* Immersive Hero Section */}
-      <section className="h-screen bg-cover bg-center flex items-center justify-center relative" style={{ backgroundImage: "url('https://picsum.photos/1920/1080?image=20')" }}>
-        <div className="absolute inset-0 bg-black/40"></div>
+      {/* Immersive Hero Video Section */}
+      <section className="h-screen relative flex items-center justify-center overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute z-0 w-auto min-w-full min-h-full max-w-none object-cover"
+        >
+          <source src="./Artworks_Only_Video_Generated.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-black/50"></div>
         <div className="text-center text-white z-10 p-4 max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">Crafting Spaces, Building Dreams.</h1>
           <p className="text-base md:text-lg font-light leading-relaxed">
