@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar.tsx';
 import Footer from './components/Footer.tsx';
 import Home from './pages/Home.tsx';
 import About from './pages/About.tsx';
-import Experience from './pages/Experience.tsx';
+import Experiences from './pages/Experiences.tsx';
 import Contact from './pages/Contact.tsx';
 import Gallery from './pages/Gallery.tsx';
 import DeveloperPanel from './components/DeveloperPanel.tsx';
@@ -28,7 +28,7 @@ const App: React.FC = () => {
       case 'About':
         return <About />;
       case 'Experiences':
-        return <Experience />;
+        return <Experiences />;
       case 'Contact':
         return <Contact />;
       case 'Gallery':

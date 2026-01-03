@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, storage } from '../firebase';
+import { db } from '../firebase';
 import { ref as dbRef, onValue, set, remove, update } from 'firebase/database';
-import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 interface GalleryImage {
   id: string;
@@ -43,26 +42,34 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
     if (!file) return;
 
     setUploading(true);
-    try {
-      const newImageId = `img_${Date.now()}`;
-      const imageStorageRef = storageRef(storage, `gallery/${newImageId}_${file.name}`);
-      
-      await uploadBytes(imageStorageRef, file);
-      const downloadURL = await getDownloadURL(imageStorageRef);
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      try {
+        const base64String = reader.result as string;
+        const newImageId = `img_${Date.now()}`;
+        const imageDbRef = dbRef(db, `gallery/${newImageId}`);
+        
+        await set(imageDbRef, {
+          src: base64String,
+          alt: 'A new gallery image'
+        });
 
-      const imageDbRef = dbRef(db, `gallery/${newImageId}`);
-      await set(imageDbRef, {
-        src: downloadURL,
-        alt: 'A new gallery image'
-      });
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      alert("Failed to upload image.");
-    } finally {
-      setUploading(false);
-       if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+      } catch (error) {
+        console.error("Error uploading image to Realtime Database:", error);
+        alert("Failed to upload image.");
+      } finally {
+        setUploading(false);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
+    };
+    reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+        alert("Failed to read file for upload.");
+        setUploading(false);
     }
   };
   
@@ -77,19 +84,12 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   const handleDelete = async (image: GalleryImage) => {
     if (window.confirm("Are you sure you want to delete this image? This action cannot be undone.")) {
       try {
-        // Delete from Storage
-        const imageStorageRef = storageRef(storage, image.src);
-        await deleteObject(imageStorageRef);
-
         // Delete from Realtime Database
         const imageDbRef = dbRef(db, `gallery/${image.id}`);
         await remove(imageDbRef);
       } catch(error) {
-        console.error("Error deleting image:", error);
-        alert("Failed to delete image. It might have already been removed from storage. Deleting database entry.");
-        // If storage fails (e.g. file not found), still try to delete from DB
-        const imageDbRef = dbRef(db, `gallery/${image.id}`);
-        await remove(imageDbRef);
+        console.error("Error deleting image from database:", error);
+        alert("Failed to delete image.");
       }
     }
   };
