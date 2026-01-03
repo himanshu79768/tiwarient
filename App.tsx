@@ -8,17 +8,28 @@ import Experiences from './pages/Experiences.tsx';
 import Contact from './pages/Contact.tsx';
 import Gallery from './pages/Gallery.tsx';
 import DeveloperPanel from './components/DeveloperPanel.tsx';
+import PinModal from './components/PinModal.tsx';
 import { Page } from './types.ts';
 
 const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDevPanelOpen, setIsDevPanelOpen] = useState(false);
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>('Home');
 
   const handleNavigate = (page: Page) => {
     setCurrentPage(page);
     setIsSidebarOpen(false);
     window.scrollTo(0, 0);
+  };
+
+  const handleRequestDevModeAccess = () => {
+    setIsPinModalOpen(true);
+  };
+
+  const handlePinSuccess = () => {
+    setIsPinModalOpen(false);
+    setIsDevPanelOpen(true);
   };
 
   const renderPage = () => {
@@ -55,7 +66,8 @@ const App: React.FC = () => {
       <main>
         {renderPage()}
       </main>
-      <Footer onNavigate={handleNavigate} onUnlockDevMode={() => setIsDevPanelOpen(true)} />
+      <Footer onNavigate={handleNavigate} onRequestDevModeAccess={handleRequestDevModeAccess} />
+      {isPinModalOpen && <PinModal onClose={() => setIsPinModalOpen(false)} onSuccess={handlePinSuccess} />}
       {isDevPanelOpen && <DeveloperPanel onClose={() => setIsDevPanelOpen(false)} />}
     </div>
   );

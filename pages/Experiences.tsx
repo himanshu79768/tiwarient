@@ -141,51 +141,53 @@ const Experiences: React.FC = () => {
   }, []);
 
   return (
-    <div className="animate-fadeIn pt-48">
-      <h1 className="text-5xl font-serif text-center mb-16 text-brown-dark">Our Experiences</h1>
-      
-      {/* Our Services Section */}
-      <section className="p-8 md:px-16 max-w-7xl mx-auto">
-         <div className="max-w-3xl">
-            <h2 className="text-2xl font-serif text-brown-dark uppercase mb-4">Our Services</h2>
-            <p className="text-grey-dark leading-relaxed mb-12">
-                Comprehensive construction and design solutions tailored for Goa's unique requirements.
-            </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ServiceCard
-                title="Interior Design"
-                description="Professional interior design and space planning that blends modern aesthetics with traditional Goan charm and functionality."
-                icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18h18m-1.5 18V5.25A2.25 2.25 0 0019.5 3h-15A2.25 2.25 0 002.25 5.25V21" /></svg>}
-            />
-            <ServiceCard
-                title="Renovation"
-                description="Home and office renovation and remodeling services to modernize and upgrade your existing spaces with contemporary designs."
-                icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.472-2.472a3.375 3.375 0 00-4.773-4.773L6.75 15.17l-2.472 2.472a3.375 3.375 0 004.773 4.773l2.472-2.472z" /></svg>}
-            />
-            <ServiceCard
-                title="Consultation"
-                description="Expert architectural and design consultation services to help you plan and execute your construction or renovation project effectively."
-                icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
-            />
-        </div>
-      </section>
+    <>
+      <div className="animate-fadeIn pt-48 md:pt-56 p-8 md:px-16 max-w-7xl mx-auto">
+        <h1 className="text-5xl font-serif text-center mb-16 text-brown-dark">Our Experiences</h1>
+        
+        {/* Our Services Section */}
+        <section>
+           <div className="max-w-3xl mx-auto text-center md:text-left">
+              <h2 className="text-2xl font-serif text-brown-dark uppercase mb-4">Our Services</h2>
+              <p className="text-grey-dark leading-relaxed mb-12">
+                  Comprehensive construction and design solutions tailored for Goa's unique requirements.
+              </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <ServiceCard
+                  title="Interior Design"
+                  description="Professional interior design and space planning that blends modern aesthetics with traditional Goan charm and functionality."
+                  icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18h18m-1.5 18V5.25A2.25 2.25 0 0019.5 3h-15A2.25 2.25 0 002.25 5.25V21" /></svg>}
+              />
+              <ServiceCard
+                  title="Renovation"
+                  description="Home and office renovation and remodeling services to modernize and upgrade your existing spaces with contemporary designs."
+                  icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.472-2.472a3.375 3.375 0 00-4.773-4.773L6.75 15.17l-2.472 2.472a3.375 3.375 0 004.773 4.773l2.472-2.472z" /></svg>}
+              />
+              <ServiceCard
+                  title="Consultation"
+                  description="Expert architectural and design consultation services to help you plan and execute your construction or renovation project effectively."
+                  icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
+              />
+          </div>
+        </section>
 
-      {/* Our Portfolio Section */}
-      <section className="py-16 p-8 md:px-16 max-w-7xl mx-auto">
-        <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12">Our Portfolio</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <ProjectCard title="Living Space" description="Elegant living area with premium flooring." imageUrl="https://iili.io/fjPj3kF.md.jpg" />
-          <ProjectCard title="Temple" description="Intricate marble work for a serene temple space." imageUrl="https://iili.io/fjPwznj.md.jpg" />
-          <ProjectCard title="Kitchen" description="Modern kitchen with custom tiling and fixtures." imageUrl="https://iili.io/fjPNmLG.jpg" />
-          <ProjectCard title="Stairs" description="Stylish staircase featuring durable materials." imageUrl="https://iili.io/fjPCkNf.md.jpg" />
-        </div>
-      </section>
+        {/* Our Portfolio Section */}
+        <section className="py-16">
+          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12 text-center md:text-left">Our Portfolio</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <ProjectCard title="Living Space" description="Elegant living area with premium flooring." imageUrl="https://iili.io/fjPj3kF.md.jpg" />
+            <ProjectCard title="Temple" description="Intricate marble work for a serene temple space." imageUrl="https://iili.io/fjPwznj.md.jpg" />
+            <ProjectCard title="Kitchen" description="Modern kitchen with custom tiling and fixtures." imageUrl="https://iili.io/fjPNmLG.jpg" />
+            <ProjectCard title="Stairs" description="Stylish staircase featuring durable materials." imageUrl="https://iili.io/fjPCkNf.md.jpg" />
+          </div>
+        </section>
+      </div>
 
       {/* Testimonials Section */}
       <section className="py-16 bg-brown-light/20">
-        <div className="p-8 md:p-16 max-w-7xl mx-auto">
-          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12">What Our Clients Say</h2>
+        <div className="p-8 md:px-16 max-w-7xl mx-auto">
+          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12 text-center md:text-left">What Our Clients Say</h2>
           {loading ? (
             <p className="text-center">Loading testimonials...</p>
           ) : (
@@ -197,7 +199,7 @@ const Experiences: React.FC = () => {
           )}
         </div>
       </section>
-    </div>
+    </>
   );
 };
 

@@ -33,6 +33,7 @@ const Contact: React.FC = () => {
       await set(newContactRef, {
         ...formData,
         submittedAt: new Date().toISOString(),
+        isRead: false, // Mark as unread by default
       });
       setToastMessage('Thank you! Your message has been sent.');
       setFormData({ name: '', email: '', phone: '', reason: 'Interior Design', message: '' });
@@ -47,12 +48,12 @@ const Contact: React.FC = () => {
 
   return (
     <>
-      <div className="pt-48 p-8 md:p-16 max-w-7xl mx-auto animate-fadeIn">
-        <h1 className="text-5xl font-serif text-center mb-16 text-brown-dark">Contact us</h1>
+      <div className="pt-48 md:pt-56 p-8 md:p-16 max-w-7xl mx-auto animate-fadeIn">
+        <h1 className="text-5xl font-serif text-center mb-16 text-brown-dark">Contact Us</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Details Section */}
           <div className="space-y-8">
-            <h2 className="text-3xl font-serif text-brown-dark mb-6 uppercase">Get In Touch</h2>
+            <h2 className="text-2xl font-serif text-brown-dark mb-6 uppercase">Get In Touch</h2>
             <div>
               <h3 className="text-xl font-serif text-brown-dark mb-2">Visit Our Showroom</h3>
               <p className="text-grey-dark">Khorlim, Mapusa, Goa, 403507.</p>
@@ -77,7 +78,7 @@ const Contact: React.FC = () => {
 
           {/* Form Section */}
           <div className="bg-white/50 p-8 rounded-lg shadow-lg backdrop-blur-sm">
-            <h2 className="text-3xl font-serif text-brown-dark mb-6 uppercase">Send Us a Message</h2>
+            <h2 className="text-2xl font-serif text-brown-dark mb-6 uppercase">Send Us a Message</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-grey-dark">Full Name</label>
