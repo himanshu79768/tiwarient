@@ -36,12 +36,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, currentP
         isOpen ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
-      <div className="h-24 flex items-center justify-between px-6 md:px-12">
+      <div className="h-20 flex items-center justify-between px-6 md:px-12">
          <button onClick={onClose} className="flex items-center gap-2 group">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-beige group-hover:opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-            <span className="font-sans text-xs font-medium tracking-widest text-beige group-hover:opacity-70">MENU</span>
+            <span className="font-sans text-xs font-medium tracking-widest text-beige group-hover:opacity-70">CLOSE</span>
           </button>
           <button onClick={() => onNavigate('Contact')} className="font-sans text-xs font-medium tracking-widest text-beige hover:opacity-70">
             CONTACT
@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, currentP
       
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
         {/* Column 1: Navigation */}
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-12 md:pl-8">
           <div>
             <SectionTitle>GENERAL INFO</SectionTitle>
             <div className="flex flex-col items-start space-y-3">
@@ -76,14 +76,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, currentP
             <div>
               <SectionTitle>LOCATION</SectionTitle>
               <p className="font-serif text-lg text-beige/80">
-                Shop No. 5, Morod,<br/>Mapusa, Goa, 403507
+                Khorlim, Mapusa,<br/>Goa, 403507.
               </p>
+              <a 
+                href="https://www.google.com/maps/search/?api=1&query=Khorlim%2C+Mapusa%2C+Goa%2C+403507" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="mt-4 inline-block bg-beige/20 hover:bg-beige/30 text-beige font-sans text-xs font-medium tracking-widest px-4 py-2 rounded-md transition-colors"
+              >
+                VIEW ON MAP
+              </a>
             </div>
              <div>
               <SectionTitle>CONTACT</SectionTitle>
               <div className="font-serif text-lg flex flex-col items-start">
-                <a href="mailto:info@tiwarienterprises.com" className="text-beige/80 hover:text-beige">info@tiwarienterprises.com</a>
-                <a href="tel:+911234567890" className="text-beige/80 hover:text-beige">+91 12345 67890</a>
+                <a href="mailto:tiwarienterprises@gmail.com" className="text-beige/80 hover:text-beige">tiwarienterprises@gmail.com</a>
+                <a href="tel:+919049600466" className="text-beige/80 hover:text-beige">+91 9049600466</a>
               </div>
             </div>
         </div>

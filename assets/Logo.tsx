@@ -12,7 +12,7 @@ const Logo: React.FC<LogoProps> = ({ color = '#5D534A' }) => {
     <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
       <style>
         {`
-          .logo-font-main { font-family: 'Playfair Display', serif; font-weight: 400; transition: fill 0.3s ease-in-out; }
+          .logo-font-main { font-family: 'Libre Baskerville', serif; font-weight: 400; transition: fill 0.3s ease-in-out; }
           .logo-font-sub { font-family: 'Roboto', sans-serif; font-weight: 300; transition: fill 0.3s ease-in-out; }
         `}
       </style>

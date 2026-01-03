@@ -31,13 +31,13 @@ const Contact: React.FC = () => {
         <div className="space-y-8">
           <div>
             <h3 className="text-2xl font-serif text-brown-dark mb-2">Visit Our Showroom</h3>
-            <p className="text-grey-dark">Shop No. 5, Morod, Mapusa, Goa, 403507</p>
+            <p className="text-grey-dark">Khorlim, Mapusa, Goa, 403507.</p>
           </div>
            <div>
             <h3 className="text-2xl font-serif text-brown-dark mb-2">Contact Us</h3>
             <p className="text-grey-dark">
-              <strong>Phone:</strong> +91 12345 67890<br/>
-              <strong>Email:</strong> info@tiwarienterprises.com
+              <strong>Phone:</strong> +91 9049600466<br/>
+              <strong>Email:</strong> tiwarienterprises@gmail.com
             </p>
           </div>
            <div>

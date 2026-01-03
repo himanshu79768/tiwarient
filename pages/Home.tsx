@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ParallaxImage from '../components/ParallaxImage';
 
 const FeatureCard: React.FC<{ title: string; description: string; icon: React.ReactNode }> = ({ title, description, icon }) => (
@@ -12,37 +12,34 @@ const FeatureCard: React.FC<{ title: string; description: string; icon: React.Re
 );
 
 const Home: React.FC = () => {
-  const videoSources = [
-    '/hero.mp4',
-  ];
-
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-
-  const handleVideoEnd = () => {
-    setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videoSources.length);
-  };
-
   return (
     <div className="animate-fadeIn">
       {/* Immersive Hero Video Section */}
       <section className="h-screen relative flex items-center justify-center overflow-hidden">
         <video
-          key={videoSources[currentVideoIndex]}
-          src={videoSources[currentVideoIndex]}
+          src="/hero.mp4"
           autoPlay
+          loop
           muted
           playsInline
-          onEnded={handleVideoEnd}
           className="absolute z-0 w-auto min-w-full min-h-full max-w-none object-cover"
         >
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="text-center text-white z-10 p-4 max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">Crafting Spaces, Building Dreams.</h1>
-          <p className="text-base md:text-lg font-light leading-relaxed">
-            Your trusted partner in premium flooring, tiling, and plumbing solutions in Mapusa, Goa. We bring elegance, durability, and craftsmanship to every surface of your home.
-          </p>
+          <h1 className="text-4xl md:text-6xl font-serif font-normal mb-4 leading-relaxed">
+            Elevating Living Through
+            <span className="block">
+              <span className="italic">Goan</span> Craftsmanship
+            </span>
+          </h1>
+        </div>
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 text-center text-white">
+          <p className="font-sans text-xs tracking-widest mb-4">SCROLL TO EXPLORE</p>
+          <div className="w-px h-16 mx-auto bg-white/20 overflow-hidden relative">
+            <div className="w-full h-full bg-white absolute top-0 left-0 animate-scroll-down-line"></div>
+          </div>
         </div>
       </section>
 

@@ -40,7 +40,12 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-beige text-brown-dark min-h-screen font-sans">
-      <Header onMenuClick={() => setIsSidebarOpen(true)} onNavigate={handleNavigate} currentPage={currentPage} />
+      <Header
+        onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        onNavigate={handleNavigate}
+        currentPage={currentPage}
+        isSidebarOpen={isSidebarOpen}
+      />
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
