@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Logo from '../assets/Logo.tsx';
-import Toast from './Toast.tsx';
-import { Page } from '../types.ts';
+import Logo from '../assets/Logo';
+import Toast from './Toast';
+import { Page } from '../types';
 
 interface FooterProps {
   onNavigate: (page: Page) => void;
