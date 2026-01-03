@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ParallaxImage from '../components/ParallaxImage.tsx';
-import { db } from '../firebase.ts';
+import ParallaxImage from '../components/ParallaxImage';
+import { db } from '../firebase';
 import { ref, get } from 'firebase/database';
 
 interface GalleryImage {
