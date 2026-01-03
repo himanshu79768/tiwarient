@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ParallaxImage from '../components/ParallaxImage';
 import { db } from '../firebase';
 import { ref, get } from 'firebase/database';
@@ -7,6 +7,73 @@ interface Testimonial {
   quote: string;
   author: string;
 }
+
+// Custom hook to detect when an element is in view
+const useInView = (ref: React.RefObject<HTMLElement>, options?: IntersectionObserverInit) => {
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsInView(true);
+        observer.unobserve(entry.target);
+      }
+    }, options);
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [ref, options]);
+
+  return isInView;
+};
+
+// Typing animation component
+const TypingText: React.FC<{ text: string; speed?: number; className?: string }> = ({ text, speed = 30, className = '' }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const ref = useRef<HTMLParagraphElement>(null);
+  const isInView = useInView(ref, { threshold: 0.5 });
+  const [isFinished, setIsFinished] = useState(false);
+
+  useEffect(() => {
+    if (isInView && text) {
+      // Reset animation state when it comes into view
+      setDisplayedText('');
+      setIsFinished(false);
+      
+      const intervalId = setInterval(() => {
+        setDisplayedText(current => {
+          if (current.length < text.length) {
+            return text.substring(0, current.length + 1);
+          }
+          // When we reach the end, clear interval and mark as finished
+          clearInterval(intervalId);
+          setIsFinished(true);
+          return text;
+        });
+      }, speed);
+
+      // Effect cleanup
+      return () => clearInterval(intervalId);
+    }
+  }, [isInView, text, speed]);
+
+  const isTyping = isInView && !isFinished;
+
+  return (
+    <p ref={ref} className={className}>
+      {displayedText}
+      {isTyping && <span className="animate-pulse">|</span>}
+    </p>
+  );
+};
 
 const ServiceCard: React.FC<{ title: string; description: string; icon: React.ReactNode }> = ({ title, description, icon }) => (
   <div className="text-center p-6 h-full bg-white/50 rounded-lg shadow-md backdrop-blur-sm">
@@ -18,20 +85,22 @@ const ServiceCard: React.FC<{ title: string; description: string; icon: React.Re
   </div>
 );
 
-const ProjectCard: React.FC<{ title: string; location: string; imageUrl: string }> = ({ title, location, imageUrl }) => (
+const ProjectCard: React.FC<{ title: string; description: string; imageUrl: string }> = ({ title, description, imageUrl }) => (
   <div className="group relative overflow-hidden rounded-lg shadow-lg">
     <ParallaxImage src={imageUrl} alt={title} className="w-full h-80 object-cover transform transition-transform duration-500"/>
     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
     <div className="absolute bottom-0 left-0 p-6 text-white">
       <h3 className="text-2xl font-serif">{title}</h3>
-      <p className="text-sm opacity-80">{location}</p>
+      <p className="text-sm opacity-80">{description}</p>
     </div>
   </div>
 );
 
 const TestimonialCard: React.FC<Testimonial> = ({ quote, author }) => (
-  <div className="bg-white/60 p-8 rounded-lg shadow-md backdrop-blur-sm h-full">
-    <p className="text-lg italic text-grey-dark mb-4">"{quote}"</p>
+  <div className="bg-white/60 p-8 rounded-lg shadow-md backdrop-blur-sm h-full flex flex-col">
+    <div className="flex-grow min-h-[120px]">
+      <TypingText text={`"${quote}"`} className="text-lg italic text-grey-dark mb-4" />
+    </div>
     <p className="font-semibold text-right text-brown-dark">- {author}</p>
   </div>
 );
@@ -77,10 +146,12 @@ const Experiences: React.FC = () => {
       
       {/* Our Services Section */}
       <section className="p-8 md:px-16 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-serif text-center mb-4 text-brown-dark">Our Services</h2>
-        <p className="text-center text-grey-dark max-w-2xl mx-auto mb-12">
-            Comprehensive construction and design solutions tailored for Goa's unique requirements.
-        </p>
+         <div className="max-w-3xl">
+            <h2 className="text-2xl font-serif text-brown-dark uppercase mb-4">Our Services</h2>
+            <p className="text-grey-dark leading-relaxed mb-12">
+                Comprehensive construction and design solutions tailored for Goa's unique requirements.
+            </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <ServiceCard
                 title="Interior Design"
@@ -102,19 +173,19 @@ const Experiences: React.FC = () => {
 
       {/* Our Portfolio Section */}
       <section className="py-16 p-8 md:px-16 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-serif text-center mb-12 text-brown-dark">Our Portfolio</h2>
+        <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12">Our Portfolio</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <ProjectCard title="Luxury Villa Flooring" location="Assagao, Goa" imageUrl="https://picsum.photos/600/800?image=1074" />
-          <ProjectCard title="Modern Bathroom Renovation" location="Siolim, Goa" imageUrl="https://picsum.photos/600/800?image=659" />
-          <ProjectCard title="Elegant Staircase Design" location="Candolim, Goa" imageUrl="https://i.ibb.co/S4VGtZZZ/stairs2.jpg" />
-          <ProjectCard title="Contemporary Kitchen Remodel" location="Mapusa, Goa" imageUrl="https://picsum.photos/600/800?image=1060" />
+          <ProjectCard title="Living Space" description="Elegant living area with premium flooring." imageUrl="https://iili.io/fjPj3kF.md.jpg" />
+          <ProjectCard title="Temple" description="Intricate marble work for a serene temple space." imageUrl="https://iili.io/fjPwznj.md.jpg" />
+          <ProjectCard title="Kitchen" description="Modern kitchen with custom tiling and fixtures." imageUrl="https://iili.io/fjPNmLG.jpg" />
+          <ProjectCard title="Stairs" description="Stylish staircase featuring durable materials." imageUrl="https://iili.io/fjPCkNf.md.jpg" />
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className="py-16 bg-brown-light/20">
         <div className="p-8 md:p-16 max-w-7xl mx-auto">
-          <h2 className="text-4xl font-serif text-center mb-12 text-brown-dark">What Our Clients Say</h2>
+          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12">What Our Clients Say</h2>
           {loading ? (
             <p className="text-center">Loading testimonials...</p>
           ) : (

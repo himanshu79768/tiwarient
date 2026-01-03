@@ -71,7 +71,7 @@ const Home: React.FC = () => {
       {/* Why Choose Us Section */}
       <section className="py-20 px-6 bg-white/50">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-serif text-brown-dark text-center mb-12 md:mb-16">The Tiwari Difference</h2>
+          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12 md:mb-16">The Tiwari Difference</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 gap-x-8">
             <FeatureCard
               title="Unrivaled Selection"
