@@ -1,4 +1,5 @@
 
+
 export type Page = 'Home' | 'About' | 'Experiences' | 'Contact' | 'Gallery';
 
 export interface GalleryImage {
@@ -7,4 +8,14 @@ export interface GalleryImage {
   alt: string; 
   description: string;
   category: string;
+}
+
+export interface ViewershipRecord {
+    id: string;
+    firstVisit: string;
+    lastVisit: string;
+    sessionCount: number;
+    totalDuration: number; // in milliseconds
+    deviceInfo: string;
+    isDeveloper: boolean;
 }

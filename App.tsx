@@ -12,7 +12,7 @@ import PinModal from './components/PinModal.tsx';
 import SplashScreen from './components/SplashScreen.tsx';
 import { Page } from './types.ts';
 import { db } from './firebase.ts';
-import { ref, get } from 'firebase/database';
+import { ref, get, set, update, increment } from 'firebase/database';
 
 const WhatsAppButton: React.FC = () => {
     const message = encodeURIComponent("Hello Tiwari Enterprises, I would like to make an enquiry.");
@@ -39,6 +39,64 @@ const App: React.FC = () => {
   const [isDevPanelOpen, setIsDevPanelOpen] = useState(false);
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>('Home');
+
+  useEffect(() => {
+    // Visitor Tracking
+    const trackVisitor = async () => {
+        let visitorId = localStorage.getItem('visitorId');
+        const now = new Date().toISOString();
+
+        if (!visitorId) {
+            visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            localStorage.setItem('visitorId', visitorId);
+
+            const visitorRef = ref(db, `viewership/${visitorId}`);
+            await set(visitorRef, {
+                firstVisit: now,
+                lastVisit: now,
+                sessionCount: 1,
+                deviceInfo: navigator.userAgent,
+                isDeveloper: false,
+                totalDuration: 0,
+            });
+        } else {
+            const visitorRef = ref(db, `viewership/${visitorId}`);
+            // Use transaction for atomic updates if needed, but update is fine for this
+            await update(visitorRef, {
+                lastVisit: now,
+                sessionCount: increment(1),
+            });
+        }
+    };
+    
+    trackVisitor();
+  }, []);
+
+  useEffect(() => {
+    // Session Duration Tracking
+    const visitorId = localStorage.getItem('visitorId');
+    if (!visitorId) return;
+
+    const sessionStartTime = Date.now();
+
+    const handleBeforeUnload = () => {
+        const sessionEndTime = Date.now();
+        const sessionDuration = sessionEndTime - sessionStartTime;
+        if (sessionDuration > 0) {
+            const visitorRef = ref(db, `viewership/${visitorId}`);
+            // This is a "fire-and-forget" update. Not guaranteed to succeed, but best effort.
+            update(visitorRef, {
+                totalDuration: increment(sessionDuration),
+            });
+        }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     const preloadPageImages = () => {
@@ -117,6 +175,12 @@ const App: React.FC = () => {
   const handlePinSuccess = () => {
     setIsPinModalOpen(false);
     setIsDevPanelOpen(true);
+    // Flag this visitor as a developer
+    const visitorId = localStorage.getItem('visitorId');
+    if (visitorId) {
+        const visitorRef = ref(db, `viewership/${visitorId}`);
+        update(visitorRef, { isDeveloper: true });
+    }
   };
 
   return (

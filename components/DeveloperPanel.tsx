@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
 import { ref as dbRef, onValue, set, remove, update } from 'firebase/database';
-import { GalleryImage } from '../types';
+import { GalleryImage, ViewershipRecord } from '../types';
 
 interface ContactMessage {
     id: string;
@@ -108,10 +108,11 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   // Data States
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [viewershipData, setViewershipData] = useState<ViewershipRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // UI States
-  const [activeTab, setActiveTab] = useState<'gallery' | 'messages'>('gallery');
+  const [activeTab, setActiveTab] = useState<'gallery' | 'messages' | 'viewership'>('gallery');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState<GalleryImage | null>(null);
   const [confirmModalData, setConfirmModalData] = useState<{ type: 'image' | 'message', id: string } | null>(null);
@@ -136,10 +137,20 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
         messageList.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
         setMessages(messageList);
     });
+    
+    // Viewership listener
+    const viewershipRef = dbRef(db, 'viewership');
+    const unsubscribeViewership = onValue(viewershipRef, (snapshot) => {
+        const data = snapshot.val();
+        const viewershipList: ViewershipRecord[] = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+        viewershipList.sort((a, b) => new Date(b.lastVisit).getTime() - new Date(a.lastVisit).getTime());
+        setViewershipData(viewershipList);
+    });
 
     return () => {
       unsubscribeGallery();
       unsubscribeMessages();
+      unsubscribeViewership();
     };
   }, []);
   
@@ -244,6 +255,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   };
   
   const unreadMessagesCount = messages.filter(m => !m.isRead).length;
+  const totalViewership = viewershipData.filter(v => !v.isDeveloper).length;
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fadeIn">
@@ -263,6 +275,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                 <TabButton active={activeTab === 'messages'} onClick={() => setActiveTab('messages')}>
                     Messages {unreadMessagesCount > 0 && <span className="ml-2 bg-accent text-white text-xs font-bold rounded-full px-2 py-0.5">{unreadMessagesCount}</span>}
                 </TabButton>
+                <TabButton active={activeTab === 'viewership'} onClick={() => setActiveTab('viewership')}>Viewership</TabButton>
             </div>
         </div>
         
@@ -273,7 +286,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="text-xl font-serif text-brown-dark uppercase">MANAGE GALLERY</h3>
                         <button onClick={() => setIsAddModalOpen(true)} className="bg-brown-dark text-white hover:bg-brown transition-colors rounded-full p-2 md:px-4 md:py-2 md:rounded-full flex items-center justify-center text-sm font-semibold">
-                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:mr-2" fill="none" viewBox="0 0 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
                            <span className="hidden md:block">Add New Image</span>
                         </button>
                     </div>
@@ -288,7 +301,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                                         </span>
                                         {status === 'failed' && (
                                             <button onClick={() => handleClearUpload(key)} className="text-grey-dark hover:text-red-500" title="Clear failed upload">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </button>
                                         )}
                                     </div>
@@ -306,10 +319,10 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                             </div>
                             <div className="flex justify-end gap-2 mt-auto pt-1">
                                 <IconButton onClick={() => setEditModalData(img)} title="Edit" className="bg-brown/70 hover:bg-brown text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>
                                 </IconButton>
                                 <IconButton onClick={() => setConfirmModalData({ type: 'image', id: img.id })} title="Delete" className="bg-red-500 hover:bg-red-600 text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 </IconButton>
                             </div>
                         </div>
@@ -338,12 +351,12 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                                         <div className="flex items-center gap-1 flex-shrink-0">
                                             <IconButton onClick={() => toggleMessageReadStatus(msg)} title={msg.isRead ? "Mark as Unread" : "Mark as Read"} className="text-grey-dark hover:text-brown-dark hover:bg-grey-light/50">
                                                 {msg.isRead 
-                                                    ? <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19h18" /></svg>
-                                                    : <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12A4 4 0 108 12a4 4 0 008 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" /></svg>
+                                                    ? <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19h18" /></svg>
+                                                    : <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12A4 4 0 108 12a4 4 0 008 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" /></svg>
                                                 }
                                             </IconButton>
                                              <IconButton onClick={() => setConfirmModalData({ type: 'message', id: msg.id })} title="Delete Message" className="text-red-500 hover:text-red-700 hover:bg-red-100">
-                                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                             </IconButton>
                                         </div>
                                     </div>
@@ -352,6 +365,37 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                              ))}
                          </div>
                      )}
+                </div>
+            </div>
+            <div className={`absolute inset-0 transition-transform duration-300 ease-in-out ${activeTab === 'viewership' ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div className="p-6 h-full flex flex-col">
+                    <div className="flex-shrink-0 mb-6">
+                        <h3 className="text-xl font-serif text-brown-dark uppercase mb-4">WEBSITE VIEWERSHIP</h3>
+                        <div className="bg-white/50 p-4 rounded-md shadow-sm">
+                            <p className="text-sm text-grey-dark">Total Unique Visitors</p>
+                            <p className="text-4xl font-serif font-bold text-brown-dark">{totalViewership}</p>
+                            <p className="text-xs text-grey-dark mt-1">This count excludes developers/admins.</p>
+                        </div>
+                    </div>
+                    <div className="flex-grow overflow-auto">
+                        {isLoading ? <p>Loading viewership data...</p> : viewershipData.length === 0 ? <p className="text-grey-dark text-center py-8">No viewership data yet.</p> : (
+                            <table className="w-full text-left table-fixed">
+                                <thead className="bg-brown-light/20 sticky top-0">
+                                    <tr>
+                                        <th className="p-3 text-sm font-semibold text-brown-dark w-1/4">Visitor ID</th>
+                                        <th className="p-3 text-sm font-semibold text-brown-dark text-center">Status</th>
+                                        <th className="p-3 text-sm font-semibold text-brown-dark text-center">Sessions</th>
+                                        <th className="p-3 text-sm font-semibold text-brown-dark">Total Time</th>
+                                        <th className="p-3 text-sm font-semibold text-brown-dark">Last Visit</th>
+                                        <th className="p-3 text-sm font-semibold text-brown-dark w-1/4">Device</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {viewershipData.map(record => <ViewershipRow key={record.id} record={record} />)}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
                 </div>
             </div>
         </main>
@@ -364,6 +408,42 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   );
 };
 
+
+// --- HELPERS & SUB-COMPONENTS ---
+const formatDuration = (ms: number = 0) => {
+    if (ms < 1000) return `${ms} ms`;
+    const seconds = Math.floor(ms / 1000);
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ${seconds % 60}s`;
+    const hours = Math.floor(minutes / 60);
+    return `${hours}h ${minutes % 60}m`;
+};
+
+const ViewershipRow: React.FC<{ record: ViewershipRecord }> = ({ record }) => {
+    const getStatus = () => {
+        if (record.isDeveloper) return { text: 'Developer', color: 'bg-purple-200 text-purple-800' };
+        if (record.sessionCount > 5) return { text: 'Frequent', color: 'bg-green-200 text-green-800' };
+        if (record.sessionCount > 1) return { text: 'Returning', color: 'bg-blue-200 text-blue-800' };
+        return { text: 'New', color: 'bg-yellow-200 text-yellow-800' };
+    };
+    const status = getStatus();
+
+    return (
+        <tr className="border-b border-brown-light/20 hover:bg-brown-light/10">
+            <td className="p-3 text-xs text-grey-dark truncate" title={record.id}>{record.id}</td>
+            <td className="p-3 text-center">
+                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${status.color}`}>{status.text}</span>
+            </td>
+            <td className="p-3 text-center text-sm font-medium text-brown-dark">{record.sessionCount}</td>
+            <td className="p-3 text-sm text-grey-dark">{formatDuration(record.totalDuration)}</td>
+            <td className="p-3 text-xs text-grey-dark">{new Date(record.lastVisit).toLocaleString()}</td>
+            <td className="p-3 text-xs text-grey-dark truncate" title={record.deviceInfo}>{record.deviceInfo}</td>
+        </tr>
+    );
+};
+
+
 // --- MODAL COMPONENTS ---
 
 const ModalWrapper: React.FC<{ children: React.ReactNode, title: string, onClose: () => void }> = ({ children, title, onClose }) => (
@@ -372,7 +452,7 @@ const ModalWrapper: React.FC<{ children: React.ReactNode, title: string, onClose
         <header className="p-4 border-b border-brown-light/20 flex justify-between items-center">
           <h3 className="text-xl font-serif text-brown-dark">{title}</h3>
           <button onClick={onClose} className="text-brown-dark hover:text-accent p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </header>
         <div className="p-6">{children}</div>
