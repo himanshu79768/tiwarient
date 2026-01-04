@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ParallaxImage from '../components/ParallaxImage';
 import { db } from '../firebase';
 import { ref, push, set } from 'firebase/database';
 import Toast from '../components/Toast';
@@ -55,7 +54,7 @@ const Contact: React.FC = () => {
           <div className="space-y-8">
             <h2 className="text-2xl font-serif text-brown-dark mb-6 uppercase">Get In Touch</h2>
             <div>
-              <h3 className="text-xl font-serif text-brown-dark mb-2">Visit Our Showroom</h3>
+              <h3 className="text-xl font-serif text-brown-dark mb-2">Visit Our Business</h3>
               <p className="text-grey-dark">Khorlim, Mapusa, Goa, 403507.</p>
             </div>
             <div>
@@ -72,7 +71,16 @@ const Contact: React.FC = () => {
               </p>
             </div>
             <div className="h-64 rounded-lg overflow-hidden shadow-lg">
-              <ParallaxImage src="https://iili.io/fjiFKQI.md.jpg" alt="Tiwari Enterprises Showroom" className="w-full h-full object-cover" />
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15380.09339397751!2d73.80556562779165!3d15.59750109159938!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbfeb62ff705137%3A0x1c8340e42689531a!2sKhorlim%2C%20Mapusa%2C%20Goa%20403507%2C%20India!5e0!3m2!1sen!2sus!4v1672531200000!5m2!1sen!2sus"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Tiwari Enterprises Location in Khorlim, Mapusa, Goa"
+              ></iframe>
             </div>
           </div>
 

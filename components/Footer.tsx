@@ -53,25 +53,28 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestDevModeAccess }) =
             </p>
           </div>
 
-          {/* Column 2: Quick Links */}
-          <div className="md:col-span-1">
-            <h3 className="font-semibold tracking-wider text-beige/90 mb-4">QUICK LINKS</h3>
-            <div className="flex flex-col space-y-2 items-start">
-              <FooterLink page="Home" onNavigate={onNavigate} />
-              <FooterLink page="About" onNavigate={onNavigate} />
-              <FooterLink page="Experiences" onNavigate={onNavigate} />
-              <FooterLink page="Gallery" onNavigate={onNavigate} />
-              <FooterLink page="Contact" onNavigate={onNavigate} />
+          {/* Combined Columns for Links & Contact */}
+          <div className="grid grid-cols-2 gap-8 md:col-span-2">
+            {/* Quick Links */}
+            <div>
+              <h3 className="font-semibold tracking-wider text-beige/90 mb-4">QUICK LINKS</h3>
+              <div className="flex flex-col space-y-2 items-start">
+                <FooterLink page="Home" onNavigate={onNavigate} />
+                <FooterLink page="About" onNavigate={onNavigate} />
+                <FooterLink page="Experiences" onNavigate={onNavigate} />
+                <FooterLink page="Gallery" onNavigate={onNavigate} />
+                <FooterLink page="Contact" onNavigate={onNavigate} />
+              </div>
             </div>
-          </div>
 
-          {/* Column 3: Contact Info */}
-          <div className="md:col-span-1">
-            <h3 className="font-semibold tracking-wider text-beige/90 mb-4">CONTACT US</h3>
-            <div className="space-y-2 text-sm text-beige/70">
-              <p>Khorlim, Mapusa,<br />Goa, 403507.</p>
-              <p>tiwarienterprises@gmail.com</p>
-              <p>+91 9049600466</p>
+            {/* Contact Info */}
+            <div>
+              <h3 className="font-semibold tracking-wider text-beige/90 mb-4">CONTACT US</h3>
+              <div className="space-y-2 text-sm text-beige/70">
+                <p>Khorlim, Mapusa,<br />Goa, 403507.</p>
+                <p>tiwarienterprises@gmail.com</p>
+                <p>+91 9049600466</p>
+              </div>
             </div>
           </div>
           
