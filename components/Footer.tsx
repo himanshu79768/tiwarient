@@ -101,7 +101,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestDevModeAccess }) =
 
         </div>
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-beige/10 text-center text-xs text-beige/50">
-          <p onClick={handleCopyrightClick} className="cursor-pointer select-none">&copy; {new Date().getFullYear()} Tiwari Enterprises. All Rights Reserved.</p>
+          <p onClick={handleCopyrightClick} className="cursor-pointer select-none">&copy; {new Date().getFullYear()} Tiwari Enterprises. All Rights Reserved | Made by Himanshu</p>
         </div>
       </footer>
       <Toast message={toastMessage} onClear={() => setToastMessage('')} />
