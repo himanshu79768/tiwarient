@@ -14,7 +14,7 @@
         theme: {
           extend: {
             colors: {
-              'beige': '#f7f5ed',
+              'beige': '#FCFBF8',
               'brown': {
                 'light': '#A0937D',
                 'DEFAULT': '#8D7B68',
@@ -61,6 +61,17 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+        /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+      }
+      /* Hide scrollbar for Firefox and apply zoom */
+      html {
+        scrollbar-width: none;
+        zoom: 0.95;
+      }
+      /* Hide scrollbars for Chrome, Safari, Opera */
+      ::-webkit-scrollbar {
+        display: none;
       }
       input, textarea, select {
         -webkit-user-select: text;
