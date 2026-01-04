@@ -74,7 +74,7 @@ const About: React.FC = () => {
     <div className="pt-28 animate-fadeIn">
       {/* Header section */}
       <section className="p-8 pb-2 md:px-16 max-w-7xl mx-auto text-center">
-        <h1 className="text-5xl font-serif mb-4 text-brown-dark">About Tiwari Enterprises</h1>
+        <h1 className="text-5xl font-serif mb-4 text-brown-dark">About Us</h1>
        
       </section>
 

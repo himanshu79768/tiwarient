@@ -126,7 +126,7 @@ const Gallery: React.FC = () => {
   return (
     <>
       <div className="pt-28 p-8 md:p-16 md:pt-36 max-w-7xl mx-auto animate-fadeIn">
-        <h1 className="text-5xl font-serif text-center mb-12 text-brown-dark">Gallery</h1>
+        <h1 className="text-5xl font-serif text-center mb-12 text-brown-dark">Our Gallery</h1>
         
         {loading ? (
           <p className="text-center text-grey-dark">Loading gallery...</p>

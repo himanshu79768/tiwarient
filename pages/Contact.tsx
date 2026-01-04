@@ -58,7 +58,7 @@ const Contact: React.FC = () => {
               <p className="text-grey-dark">Khorlim, Mapusa, Goa, 403507.</p>
             </div>
             <div>
-              <h3 className="text-xl font-serif text-brown-dark mb-2">Contact Us</h3>
+              <h3 className="text-xl font-serif text-brown-dark mb-2">Contact Details</h3>
               <p className="text-grey-dark">
                 <strong>Phone:</strong> +91 9049600466<br />
                 <strong>Email:</strong> tiwarienterprises@gmail.com

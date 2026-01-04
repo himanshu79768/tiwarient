@@ -99,7 +99,7 @@ const ProjectCard: React.FC<{ title: string; description: string; imageUrl: stri
 const TestimonialCard: React.FC<Testimonial> = ({ quote, author }) => (
   <div className="bg-white/60 p-8 rounded-lg shadow-md backdrop-blur-sm h-full flex flex-col">
     <div className="flex-grow min-h-[120px]">
-      <TypingText text={`"${quote}"`} className="text-lg italic text-grey-dark mb-4" />
+      <TypingText text={`"${quote}"`} className="text-lg italic text-grey-dark mb-4" speed={15} />
     </div>
     <p className="font-semibold text-right text-brown-dark">- {author}</p>
   </div>
@@ -149,9 +149,7 @@ const Experiences: React.FC = () => {
         <section>
            <div className="max-w-3xl mx-auto text-center md:text-left">
               <h2 className="text-2xl font-serif text-brown-dark uppercase mb-4 text-left">Our Services</h2>
-              <p className="text-grey-dark leading-relaxed mb-12 text-left">
-                  Comprehensive construction and design solutions tailored for Goa's unique requirements.
-              </p>
+             
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <ServiceCard
