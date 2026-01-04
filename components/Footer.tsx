@@ -48,7 +48,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestDevModeAccess }) =
             <div className="h-16 w-auto">
               <Logo color="#FCFBF8" />
             </div>
-            <p className="text-sm text-beige/60">
+            <p className="text-sm text-beige/60 text-center">
               Building excellence in Goa with quality construction and innovative interior design solutions for over 15 years.
             </p>
           </div>
