@@ -7,6 +7,7 @@ interface GalleryImage {
   id: string;
   src: string;
   alt: string;
+  description: string;
   category: string;
 }
 
@@ -47,7 +48,7 @@ const Lightbox: React.FC<{ image: GalleryImage | null; onClose: () => void }> = 
         />
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 rounded-b-lg">
           <h3 className="text-white text-xl font-serif">{image.alt}</h3>
-          <p className="text-white/80 text-sm capitalize">{image.category}</p>
+          <p className="text-white/80 text-sm">{image.description}</p>
         </div>
       </div>
     </div>
@@ -65,7 +66,7 @@ const GalleryCard: React.FC<{ image: GalleryImage; onClick: () => void }> = ({ i
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div className="absolute bottom-0 left-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
             <h3 className="text-xl font-serif text-left">{image.alt}</h3>
-            <p className="text-sm opacity-80 capitalize text-left">{image.category}</p>
+            <p className="text-sm opacity-80 text-left">{image.description}</p>
         </div>
     </button>
 );
