@@ -94,14 +94,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, currentP
             </div>
           </div>
         </div>
-
-        <div className="mt-auto pt-8 md:hidden">
-          <img 
-            src="https://iili.io/fjP0rIp.md.jpg" 
-            alt="Modern interior design" 
-            className="w-full h-48 object-cover rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
-          />
-        </div>
       </div>
     </div>
   );
