@@ -21,7 +21,7 @@ const WhatsAppButton: React.FC = () => {
             href={`https://wa.me/919049600466?text=${message}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 z-50 bg-[#128C7E] text-white p-3 md:py-2 md:px-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#128C7E] transition-all duration-300 animate-fadeIn"
+            className="fixed bottom-6 right-6 z-30 bg-[#128C7E] text-white p-3 md:py-2 md:px-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#128C7E] transition-all duration-300 animate-fadeIn"
             aria-label="Chat with us on WhatsApp"
         >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" className="h-6 w-6" fill="currentColor">
@@ -57,11 +57,9 @@ const App: React.FC = () => {
                 sessionCount: 1,
                 deviceInfo: navigator.userAgent,
                 isDeveloper: false,
-                totalDuration: 0,
             });
         } else {
             const visitorRef = ref(db, `viewership/${visitorId}`);
-            // Use transaction for atomic updates if needed, but update is fine for this
             await update(visitorRef, {
                 lastVisit: now,
                 sessionCount: increment(1),
@@ -70,32 +68,6 @@ const App: React.FC = () => {
     };
     
     trackVisitor();
-  }, []);
-
-  useEffect(() => {
-    // Session Duration Tracking
-    const visitorId = localStorage.getItem('visitorId');
-    if (!visitorId) return;
-
-    const sessionStartTime = Date.now();
-
-    const handleBeforeUnload = () => {
-        const sessionEndTime = Date.now();
-        const sessionDuration = sessionEndTime - sessionStartTime;
-        if (sessionDuration > 0) {
-            const visitorRef = ref(db, `viewership/${visitorId}`);
-            // This is a "fire-and-forget" update. Not guaranteed to succeed, but best effort.
-            update(visitorRef, {
-                totalDuration: increment(sessionDuration),
-            });
-        }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
   }, []);
 
   useEffect(() => {

@@ -15,7 +15,6 @@ export interface ViewershipRecord {
     firstVisit: string;
     lastVisit: string;
     sessionCount: number;
-    totalDuration: number; // in milliseconds
     deviceInfo: string;
     isDeveloper: boolean;
 }
