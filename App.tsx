@@ -101,23 +101,6 @@ const App: React.FC = () => {
     setIsDevPanelOpen(true);
   };
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'Home':
-        return <Home />;
-      case 'About':
-        return <About />;
-      case 'Experiences':
-        return <Experiences />;
-      case 'Contact':
-        return <Contact />;
-      case 'Gallery':
-        return <Gallery />;
-      default:
-        return <Home />;
-    }
-  };
-
   return (
     <div className="bg-beige text-brown-dark min-h-screen font-sans">
       {isLoading && <SplashScreen isFinishing={isFinishing} />}
@@ -134,7 +117,11 @@ const App: React.FC = () => {
         currentPage={currentPage}
       />
       <main>
-        {renderPage()}
+        <div style={{ display: currentPage === 'Home' ? 'block' : 'none' }}><Home /></div>
+        <div style={{ display: currentPage === 'About' ? 'block' : 'none' }}><About /></div>
+        <div style={{ display: currentPage === 'Experiences' ? 'block' : 'none' }}><Experiences /></div>
+        <div style={{ display: currentPage === 'Contact' ? 'block' : 'none' }}><Contact /></div>
+        <div style={{ display: currentPage === 'Gallery' ? 'block' : 'none' }}><Gallery /></div>
       </main>
       <Footer onNavigate={handleNavigate} onRequestDevModeAccess={handleRequestDevModeAccess} />
       {isPinModalOpen && <PinModal onClose={() => setIsPinModalOpen(false)} onSuccess={handlePinSuccess} />}

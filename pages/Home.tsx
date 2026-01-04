@@ -29,9 +29,9 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="text-center z-10 p-4 max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-serif font-light text-white/90 mb-4 tracking-wide">
-            Elevating Living Via
-            <span className="block mt-6">
-              <span className="italic">Goan</span> Craftsmanship
+            Elevating Living 
+            <span className="block mt-3">
+              Via <span className="italic">Goan</span> Craftsmanship
             </span>
           </h1>
         </div>

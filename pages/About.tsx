@@ -75,7 +75,7 @@ const About: React.FC = () => {
       {/* Header section */}
       <section className="p-8 md:px-16 max-w-7xl mx-auto text-center">
         <h1 className="text-5xl font-serif mb-4 text-brown-dark">About Tiwari Enterprises</h1>
-        <p className="text-xl text-grey-dark max-w-3xl mx-auto font-light">
+        <p className="text-l text-grey-dark max-w-3xl mx-auto font-light">
           Your trusted partner for construction and interior design in Mapusa, Goa
         </p>
       </section>

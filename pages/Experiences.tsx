@@ -148,8 +148,8 @@ const Experiences: React.FC = () => {
         {/* Our Services Section */}
         <section>
            <div className="max-w-3xl mx-auto text-center md:text-left">
-              <h2 className="text-2xl font-serif text-brown-dark uppercase mb-4">Our Services</h2>
-              <p className="text-grey-dark leading-relaxed mb-12">
+              <h2 className="text-2xl font-serif text-brown-dark uppercase mb-4 text-left">Our Services</h2>
+              <p className="text-grey-dark leading-relaxed mb-12 text-left">
                   Comprehensive construction and design solutions tailored for Goa's unique requirements.
               </p>
           </div>
@@ -174,7 +174,7 @@ const Experiences: React.FC = () => {
 
         {/* Our Portfolio Section */}
         <section className="py-16">
-          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12 text-center md:text-left">Our Portfolio</h2>
+          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12 text-left md:text-left">Our Portfolio</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <ProjectCard title="Living Space" description="Elegant living area with premium flooring." imageUrl="https://iili.io/fjPj3kF.md.jpg" />
             <ProjectCard title="Temple" description="Intricate marble work for a serene temple space." imageUrl="https://iili.io/fjPwznj.md.jpg" />
@@ -187,7 +187,7 @@ const Experiences: React.FC = () => {
       {/* Testimonials Section */}
       <section className="py-16 bg-brown-light/20">
         <div className="p-8 md:px-16 max-w-7xl mx-auto">
-          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12 text-center md:text-left">What Our Clients Say</h2>
+          <h2 className="text-2xl font-serif text-brown-dark uppercase mb-12 text-left md:text-left">What Our Clients Say</h2>
           {loading ? (
             <p className="text-center">Loading testimonials...</p>
           ) : (

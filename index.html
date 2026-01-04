@@ -14,11 +14,11 @@
         theme: {
           extend: {
             colors: {
-              'beige': '#FCFBF8',
+              'beige': '#f7f5ed',
               'brown': {
                 'light': '#A0937D',
                 'DEFAULT': '#8D7B68',
-                'dark': '#5D534A',
+                'dark': '#473f39',
               },
               'grey': {
                 'light': '#D1D5DB',
@@ -51,6 +51,22 @@
       }
       .animate-fadeIn {
         animation: fadeIn 0.5s ease-in-out forwards;
+      }
+      /* Disable text selection and tap highlight */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      input, textarea, select {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
       }
     </style>
   <script type="importmap">
