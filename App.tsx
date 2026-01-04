@@ -21,7 +21,7 @@ const WhatsAppButton: React.FC = () => {
             href={`https://wa.me/919049600466?text=${message}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 z-30 bg-[#128C7E] text-white p-3 md:py-2 md:px-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#128C7E] transition-all duration-300 animate-fadeIn"
+            className="fixed bottom-12 right-6 z-30 bg-[#128C7E] text-white p-3 md:py-2 md:px-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#128C7E] transition-all duration-300 animate-fadeIn"
             aria-label="Chat with us on WhatsApp"
         >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" className="h-6 w-6" fill="currentColor">

@@ -48,10 +48,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, currentP
         </button>
       </div>
       
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
-        {/* Column 1: Navigation */}
-        <div className="flex flex-col gap-12 md:pl-8">
-          <div>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-16 flex flex-col" style={{ height: 'calc(100vh - 5rem)'}}>
+        <div className="flex-grow grid grid-cols-2 gap-x-8 gap-y-8 md:gap-12">
+          {/* General Info */}
+          <div className="pl-4 md:pl-8">
             <SectionTitle>GENERAL INFO</SectionTitle>
             <div className="flex flex-col items-start space-y-3">
               <MenuLink page="Home" onNavigate={onNavigate} isActive={currentPage === 'Home'} />
@@ -60,40 +60,47 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, currentP
               <MenuLink page="Contact" onNavigate={onNavigate} isActive={currentPage === 'Contact'} />
             </div>
           </div>
-           <div>
+
+          {/* Location */}
+          <div className="text-left pr-4 md:pr-8">
+            <SectionTitle>LOCATION</SectionTitle>
+            <p className="font-serif text-lg text-beige/80">
+              Khorlim, Mapusa,<br/>Goa, 403507.
+            </p>
+            <a 
+              href="https://www.google.com/maps/search/?api=1&query=Khorlim%2C+Mapusa%2C+Goa%2C+403507" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="mt-4 inline-block bg-beige/20 hover:bg-beige/30 text-beige font-sans text-xs font-medium tracking-widest px-4 py-2 rounded-md transition-colors"
+            >
+              VIEW ON MAP
+            </a>
+          </div>
+
+          {/* Explore */}
+          <div className="pl-4 md:pl-8">
             <SectionTitle>EXPLORE</SectionTitle>
             <div className="flex flex-col items-start space-y-3">
               <MenuLink page="Gallery" onNavigate={onNavigate} isActive={currentPage === 'Gallery'} />
             </div>
           </div>
+
+          {/* Contact */}
+          <div className="text-left pr-4 md:pr-8">
+            <SectionTitle>CONTACT</SectionTitle>
+            <div className="font-serif text-lg flex flex-col items-start">
+              <a href="mailto:tiwarienterprises@gmail.com" className="text-beige/80 hover:text-beige break-all">tiwarienterprises@gmail.com</a>
+              <a href="tel:+919049600466" className="text-beige/80 hover:text-beige mt-2">+91 9049600466</a>
+            </div>
+          </div>
         </div>
 
-        {/* Column 2: Empty/Spacing */}
-        <div></div>
-
-        {/* Column 3: Location & Contact */}
-        <div className="flex flex-col gap-12">
-            <div>
-              <SectionTitle>LOCATION</SectionTitle>
-              <p className="font-serif text-lg text-beige/80">
-                Khorlim, Mapusa,<br/>Goa, 403507.
-              </p>
-              <a 
-                href="https://www.google.com/maps/search/?api=1&query=Khorlim%2C+Mapusa%2C+Goa%2C+403507" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="mt-4 inline-block bg-beige/20 hover:bg-beige/30 text-beige font-sans text-xs font-medium tracking-widest px-4 py-2 rounded-md transition-colors"
-              >
-                VIEW ON MAP
-              </a>
-            </div>
-             <div>
-              <SectionTitle>CONTACT</SectionTitle>
-              <div className="font-serif text-lg flex flex-col items-start">
-                <a href="mailto:tiwarienterprises@gmail.com" className="text-beige/80 hover:text-beige">tiwarienterprises@gmail.com</a>
-                <a href="tel:+919049600466" className="text-beige/80 hover:text-beige">+91 9049600466</a>
-              </div>
-            </div>
+        <div className="mt-auto pt-8 md:hidden">
+          <img 
+            src="https://iili.io/fjP0rIp.md.jpg" 
+            alt="Modern interior design" 
+            className="w-full h-48 object-cover rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
+          />
         </div>
       </div>
     </div>
