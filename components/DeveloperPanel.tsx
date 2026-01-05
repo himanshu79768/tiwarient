@@ -23,7 +23,7 @@ interface Upload {
     status: 'compressing' | 'uploading' | 'failed';
 }
 
-const categories = [
+const initialCategories = [
   'tiles flooring',
   'stairs',
   'basin/bathroom',
@@ -110,6 +110,7 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [viewershipData, setViewershipData] = useState<ViewershipRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [imageCategories, setImageCategories] = useState(initialCategories);
 
   // UI States
   const [activeTab, setActiveTab] = useState<'gallery' | 'messages' | 'viewership'>('gallery');
@@ -155,6 +156,13 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
   }, []);
   
   // --- HANDLERS ---
+    const handleAddNewCategory = (newCategory: string) => {
+        const trimmed = newCategory.trim().toLowerCase();
+        if (trimmed && !imageCategories.includes(trimmed)) {
+            setImageCategories(prev => [...prev, trimmed]);
+        }
+    };
+
     const handleAddImage = async (file: File, title: string, description: string, category: string) => {
         if (!file) return;
 
@@ -292,14 +300,15 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
                     </div>
                      {Object.keys(uploads).length > 0 && (
                         <div className="mb-6 p-4 border rounded-md border-brown-light/20 space-y-3">
-                           {Object.entries(uploads).map(([key, {name, status}]) => (
+                           {/* FIX: Changed destructuring in map to avoid type inference issues. */}
+                           {Object.entries(uploads).map(([key, upload]) => (
                                <div key={key} className="flex justify-between items-center text-sm p-2 bg-brown-light/10 rounded">
-                                   <span className="text-grey-dark truncate pr-4">{name}</span>
+                                   <span className="text-grey-dark truncate pr-4">{upload.name}</span>
                                    <div className="flex items-center gap-2">
-                                        <span className={`font-medium capitalize ${status === 'failed' ? 'text-red-500' : 'text-brown-dark'}`}>
-                                            {status === 'compressing' ? 'Compressing...' : status === 'uploading' ? 'Uploading...' : 'Failed'}
+                                        <span className={`font-medium capitalize ${upload.status === 'failed' ? 'text-red-500' : 'text-brown-dark'}`}>
+                                            {upload.status === 'compressing' ? 'Compressing...' : upload.status === 'uploading' ? 'Uploading...' : 'Failed'}
                                         </span>
-                                        {status === 'failed' && (
+                                        {upload.status === 'failed' && (
                                             <button onClick={() => handleClearUpload(key)} className="text-grey-dark hover:text-red-500" title="Clear failed upload">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </button>
@@ -406,8 +415,8 @@ const DeveloperPanel: React.FC<DeveloperPanelProps> = ({ onClose }) => {
         </main>
       </div>
 
-      {isAddModalOpen && <AddImageModal onAdd={handleAddImage} onClose={() => setIsAddModalOpen(false)} />}
-      {editModalData && <EditImageModal imageData={editModalData} onUpdate={handleUpdateImage} onClose={() => setEditModalData(null)} />}
+      {isAddModalOpen && <AddImageModal onAdd={handleAddImage} onClose={() => setIsAddModalOpen(false)} categories={imageCategories} onAddNewCategory={handleAddNewCategory} />}
+      {editModalData && <EditImageModal imageData={editModalData} onUpdate={handleUpdateImage} onClose={() => setEditModalData(null)} categories={imageCategories} onAddNewCategory={handleAddNewCategory} />}
       {confirmModalData && <ConfirmationModal onConfirm={handleDeleteConfirmed} onClose={() => setConfirmModalData(null)} type={confirmModalData.type} />}
     </div>
   );
@@ -476,21 +485,116 @@ const FormTextArea: React.FC<{ label: string } & React.TextareaHTMLAttributes<HT
     </div>
 );
 
-const FormSelect: React.FC<{ label: string, children: React.ReactNode } & React.SelectHTMLAttributes<HTMLSelectElement>> = ({ label, children, ...props }) => (
-     <div>
-        <label className="block text-sm font-medium text-grey-dark mb-1">{label}</label>
-        <select {...props} className="block w-full capitalize text-sm text-grey-dark bg-white border-grey-light rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brown focus:border-brown">
-            {children}
-        </select>
-    </div>
-);
+const CustomCategorySelect: React.FC<{
+    categories: string[];
+    selectedCategory: string;
+    onChange: (category: string) => void;
+    onAddNew: (newCategory: string) => void;
+}> = ({ categories, selectedCategory, onChange, onAddNew }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
+    const [newCategory, setNewCategory] = useState('');
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
-const AddImageModal: React.FC<{ onAdd: (file: File, title: string, desc: string, cat: string) => void, onClose: () => void }> = ({ onAdd, onClose }) => {
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+                setIsAdding(false);
+                setNewCategory('');
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleSelect = (category: string) => {
+        onChange(category);
+        setIsOpen(false);
+    };
+
+    const handleStartAdding = () => {
+        setIsAdding(true);
+        setIsOpen(true);
+    };
+    
+    const handleSaveNewCategory = () => {
+        const trimmed = newCategory.trim();
+        if (trimmed) {
+            onAddNew(trimmed);
+            onChange(trimmed.toLowerCase());
+            setIsAdding(false);
+            setIsOpen(false);
+            setNewCategory('');
+        }
+    };
+    
+    return (
+        <div className="relative" ref={dropdownRef}>
+            <label className="block text-sm font-medium text-grey-dark mb-1">Category</label>
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="relative w-full capitalize text-left text-sm text-grey-dark bg-white border border-grey-light rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-brown focus:border-brown"
+            >
+                {selectedCategory}
+                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                </span>
+            </button>
+
+            {isOpen && (
+                <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-grey-light">
+                    {isAdding ? (
+                        <div className="p-2">
+                            <input
+                                type="text"
+                                value={newCategory}
+                                onChange={(e) => setNewCategory(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSaveNewCategory(); } }}
+                                placeholder="New category name..."
+                                className="block w-full text-sm text-grey-dark bg-white border border-grey-light rounded-md py-1 px-2 focus:outline-none focus:ring-brown focus:border-brown"
+                                autoFocus
+                            />
+                            <div className="flex justify-end gap-2 mt-2">
+                                <button type="button" onClick={() => { setIsAdding(false); setNewCategory(''); }} className="px-2 py-1 text-xs font-semibold rounded bg-grey-light hover:bg-grey/50">Cancel</button>
+                                <button type="button" onClick={handleSaveNewCategory} className="px-2 py-1 text-xs font-semibold rounded bg-brown-dark text-white hover:bg-brown">Save</button>
+                            </div>
+                        </div>
+                    ) : (
+                        <ul className="max-h-60 overflow-auto rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            {categories.map((cat) => (
+                                <li key={cat} onClick={() => handleSelect(cat)} className="cursor-pointer select-none relative py-2 pl-3 pr-9 text-grey-dark hover:bg-brown-light/20 capitalize">
+                                    {cat}
+                                </li>
+                            ))}
+                            <li onClick={handleStartAdding} className="cursor-pointer select-none relative py-2 pl-3 pr-9 text-brown hover:bg-brown-light/20 font-semibold border-t border-grey-light">
+                                + Add New Category
+                            </li>
+                        </ul>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
+
+interface AddImageModalProps {
+    onAdd: (file: File, title: string, desc: string, cat: string) => void;
+    onClose: () => void;
+    categories: string[];
+    onAddNewCategory: (newCategory: string) => void;
+}
+
+const AddImageModal: React.FC<AddImageModalProps> = ({ onAdd, onClose, categories, onAddNewCategory }) => {
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [category, setCategory] = useState(categories[0]);
+    const [category, setCategory] = useState(categories[0] || '');
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
@@ -516,9 +620,7 @@ const AddImageModal: React.FC<{ onAdd: (file: File, title: string, desc: string,
                 {preview && <img src={preview} alt="Preview" className="w-full h-32 object-contain rounded-md bg-grey-light/20" />}
                 <FormInput type="text" label="Title (Alt Text)" value={title} onChange={e => setTitle(e.target.value)} required />
                 <FormTextArea label="Description" value={description} onChange={e => setDescription(e.target.value)} />
-                <FormSelect label="Category" value={category} onChange={e => setCategory(e.target.value)}>
-                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                </FormSelect>
+                <CustomCategorySelect categories={categories} selectedCategory={category} onChange={setCategory} onAddNew={onAddNewCategory} />
                 <div className="flex justify-end gap-3 pt-4">
                     <button onClick={onClose} className="px-4 py-2 text-sm font-semibold rounded-md bg-grey-light hover:bg-grey/50 text-grey-dark transition-colors">Cancel</button>
                     <button onClick={handleSubmit} disabled={!file || !title} className="px-4 py-2 text-sm font-semibold rounded-md bg-brown-dark text-white hover:bg-brown transition-colors disabled:bg-brown-light disabled:cursor-not-allowed">Upload Image</button>
@@ -528,13 +630,19 @@ const AddImageModal: React.FC<{ onAdd: (file: File, title: string, desc: string,
     );
 };
 
-
-const EditImageModal: React.FC<{ imageData: GalleryImage, onUpdate: (id: string, updates: Partial<GalleryImage>, newFile?: File) => void, onClose: () => void }> = ({ imageData, onUpdate, onClose }) => {
+interface EditImageModalProps {
+    imageData: GalleryImage;
+    onUpdate: (id: string, updates: Partial<GalleryImage>, newFile?: File) => void;
+    onClose: () => void;
+    categories: string[];
+    onAddNewCategory: (newCategory: string) => void;
+}
+const EditImageModal: React.FC<EditImageModalProps> = ({ imageData, onUpdate, onClose, categories, onAddNewCategory }) => {
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string>(imageData.src);
     const [title, setTitle] = useState(imageData.alt || '');
     const [description, setDescription] = useState(imageData.description || '');
-    const [category, setCategory] = useState(imageData.category || categories[0]);
+    const [category, setCategory] = useState(imageData.category || categories[0] || '');
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
@@ -565,9 +673,7 @@ const EditImageModal: React.FC<{ imageData: GalleryImage, onUpdate: (id: string,
                 <img src={preview} alt="Preview" className="w-full h-32 object-contain rounded-md bg-grey-light/20" />
                 <FormInput type="text" label="Title (Alt Text)" value={title} onChange={e => setTitle(e.target.value)} required />
                 <FormTextArea label="Description" value={description} onChange={e => setDescription(e.target.value)} />
-                <FormSelect label="Category" value={category} onChange={e => setCategory(e.target.value)}>
-                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                </FormSelect>
+                <CustomCategorySelect categories={categories} selectedCategory={category} onChange={setCategory} onAddNew={onAddNewCategory} />
                 <div className="flex justify-end gap-3 pt-4">
                     <button onClick={onClose} className="px-4 py-2 text-sm font-semibold rounded-md bg-grey-light hover:bg-grey/50 text-grey-dark transition-colors">Cancel</button>
                     <button onClick={handleSubmit} className="px-4 py-2 text-sm font-semibold rounded-md bg-brown-dark text-white hover:bg-brown transition-colors">Save Changes</button>
