@@ -97,8 +97,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onNavigate, currentPage, i
         </div>
         {/* Mobile Contact Button */}
         <div className="md:hidden">
-           <button onClick={() => onNavigate('Contact')} className={`font-sans text-xs font-medium tracking-widest hover:opacity-70 transition-colors duration-300 ${textClasses}`}>
-            CONTACT
+           <button onClick={() => onNavigate('Gallery')} className={`font-sans text-xs font-medium tracking-widest hover:opacity-70 transition-colors duration-300 ${textClasses}`}>
+            GALLERY
           </button>
         </div>
       </div>
