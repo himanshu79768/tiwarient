@@ -75,7 +75,7 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 gap-x-8">
             <FeatureCard
               title="Unrivaled Selection"
-              description="Explore a curated collection of the world's finest tiles, flooring, and plumbing fixtures."
+              description="Explore a curated collection of the finest tiles, flooring, construction and interior designing."
               icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>}
             />
             <FeatureCard
